@@ -1,6 +1,9 @@
 from matplotlib import pyplot
 import numpy as np
 
+fig2,ax2 = pyplot.subplots(1,1, figsize=(6,6))
+ax2.set_facecolor('k')
+
 def get_arc(rs,ths, narc=16):
     if ths[0]==ths[1]:
         # purely radial movement; only need two points.
@@ -31,24 +34,26 @@ def generate(n,r=0.9):
     ys = np.array(ys)
     return xs,ys
 #
-def gen_polar(xvs,yvs,myax):
+def gen_polar(xvs,yvs,myax, cmap=pyplot.cm.plasma):
     for j in range(len(xvs)-1):
         xrec,yrec = get_arc(xvs[j:j+2], yvs[j:j+2]) # pretend they are polar.
-        myax.plot(xrec, yrec, c=pyplot.cm.plasma(float(j)/(len(xvs)-2)), lw=2)
+        myax.plot(xrec, yrec, c=cmap(float(j)/(len(xvs)-2)), lw=2)
     return
 #
 
-###############################
+def gen_spiral(nit=200, r=0.99, cmap=pyplot.cm.plasma, show=True):
 
-fig2,ax2 = pyplot.subplots(1,1, figsize=(6,6))
-ax2.set_facecolor('k')
+    fig,ax = pyplot.subplots(1,1, figsize=(6,6))
+    ax.set_facecolor('k')
+    xs,ys = generate(nit,r)
+    gen_polar(xs,ys,ax, cmap=cmap)
 
-xs,ys = generate(100,0.98)
-gen_polar(xs,ys,ax2)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.axis('equal')
+    fig.tight_layout()
 
-ax2.set_xticks([])
-ax2.set_yticks([])
-ax2.axis('equal')
-fig2.tight_layout()
-
-fig2.show()
+    if show: fig.show()
+    
+    return fig,ax
+#
